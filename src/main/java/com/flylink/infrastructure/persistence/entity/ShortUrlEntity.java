@@ -26,7 +26,7 @@ public class ShortUrlEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 10)
+    @Column(nullable = false, unique = true, length = 50)
     private String code;
 
     @Column(name = "original_url", nullable = false, columnDefinition = "TEXT")
@@ -50,6 +50,9 @@ public class ShortUrlEntity {
 
     @Column(name = "expires_at")
     private OffsetDateTime expiresAt;
+
+    @Column(name = "last_click_at")
+    private OffsetDateTime lastClickAt;
 
     @Column(name = "is_active")
     @Builder.Default

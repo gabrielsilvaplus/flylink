@@ -17,7 +17,8 @@ import java.net.URI;
  * Controller para redirecionamento de URLs encurtadas.
  * Rota: GET /{code} → Redireciona para a URL original.
  * 
- * Regex aceita apenas códigos Base62 (letras e números, sem extensões).
+ * Regex aceita letras, números, hífens e underscores (sem extensões de
+ * arquivo).
  */
 @RestController
 @RequiredArgsConstructor
@@ -30,12 +31,14 @@ public class RedirectController {
      * Redireciona o usuário para a URL original.
      * Incrementa o contador de cliques e retorna HTTP 302 (Found).
      * 
-     * Regex {code:[a-zA-Z0-9]+} evita interceptar arquivos .html, .js etc.
+     * Regex {code:[a-zA-Z0-9_-]+} aceita códigos com letras, números, hífen e
+     * underscore.
+     * Evita interceptar arquivos .html, .js, .ico etc.
      * 
      * @param code Código da URL encurtada
      * @return Redirecionamento HTTP 302
      */
-    @GetMapping("/{code:[a-zA-Z0-9]+}")
+    @GetMapping("/{code:[a-zA-Z0-9_-]+}")
     public ResponseEntity<Void> redirect(@PathVariable String code) {
         // Busca a URL pelo código
         ShortUrlEntity entity = urlService.findByCode(code);

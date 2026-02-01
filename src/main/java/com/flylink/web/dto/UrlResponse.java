@@ -39,6 +39,9 @@ public class UrlResponse {
     @Schema(description = "Data de expiração (pode ser null)")
     private OffsetDateTime expiresAt;
 
+    @Schema(description = "Data do último clique/acesso")
+    private OffsetDateTime lastClickAt;
+
     @Schema(description = "Indica se a URL está ativa", example = "true")
     private Boolean isActive;
 }

@@ -79,13 +79,16 @@ public class UrlShortenerService {
     }
 
     /**
-     * Incrementa o contador de cliques de uma URL.
+     * Incrementa o contador de cliques e atualiza lastClickAt.
      * 
      * @param code Código da URL
      */
     @Transactional
     public void incrementClickCount(String code) {
-        repository.incrementClickCount(code);
+        ShortUrlEntity entity = findByCode(code);
+        entity.setClickCount(entity.getClickCount() + 1);
+        entity.setLastClickAt(OffsetDateTime.now());
+        repository.save(entity);
     }
 
     /**
@@ -101,8 +104,51 @@ public class UrlShortenerService {
     }
 
     /**
+     * Atualiza uma URL existente.
+     * 
+     * @param code        Código da URL
+     * @param originalUrl Nova URL original (opcional)
+     * @param expiresAt   Nova data de expiração (opcional)
+     * @return Entidade atualizada
+     */
+    @Transactional
+    public ShortUrlEntity updateUrl(String code, String originalUrl, OffsetDateTime expiresAt, String customCode) {
+        ShortUrlEntity entity = findByCode(code);
+
+        if (customCode != null && !customCode.isBlank() && !customCode.equals(entity.getCode())) {
+            if (repository.existsByCode(customCode)) {
+                throw new CodeAlreadyExistsException(customCode);
+            }
+            entity.setCode(customCode);
+        }
+
+        if (originalUrl != null && !originalUrl.isBlank()) {
+            entity.setOriginalUrl(originalUrl);
+        }
+        if (expiresAt != null) {
+            entity.setExpiresAt(expiresAt);
+        }
+
+        return repository.save(entity);
+    }
+
+    /**
+     * Alterna o estado ativo/inativo de uma URL.
+     * 
+     * @param code Código da URL
+     * @return Entidade com estado atualizado
+     */
+    @Transactional
+    public ShortUrlEntity toggleActive(String code) {
+        ShortUrlEntity entity = repository.findByCode(code)
+                .orElseThrow(() -> new UrlNotFoundException(code));
+
+        entity.setIsActive(!entity.getIsActive());
+        return repository.save(entity);
+    }
+
+    /**
      * Gera um código único Base62 de 7 caracteres.
-     * Loop até encontrar um código que não existe no banco.
      */
     private String generateUniqueCode() {
         String code;
@@ -114,7 +160,6 @@ public class UrlShortenerService {
 
     /**
      * Gera uma string aleatória em Base62.
-     * Base62 = [0-9A-Za-z] = 62 caracteres possíveis.
      */
     private String generateBase62Code() {
         StringBuilder sb = new StringBuilder(CODE_LENGTH);

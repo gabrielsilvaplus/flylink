@@ -24,9 +24,12 @@ spring:
 app:
   base-url: http://localhost:8080
 
-# Swagger UI
+# Swagger UI e OpenAPI
 springdoc:
   api-docs:
     path: /api-docs
   swagger-ui:
     path: /swagger-ui.html
+  # Content-Type padrão para todas as respostas (evita Blob no Orval/frontend)
+  default-produces-media-type: application/json
+  default-consumes-media-type: application/json

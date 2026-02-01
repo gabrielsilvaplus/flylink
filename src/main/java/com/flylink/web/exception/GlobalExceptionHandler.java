@@ -1,100 +1,47 @@
 package com.flylink.web.exception;
 
-import com.flylink.domain.exception.CodeAlreadyExistsException;
-import com.flylink.domain.exception.UrlNotFoundException;
 import com.flylink.web.dto.ErrorResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.List;
-
 /**
- * Handler global de exceções da API.
- * Captura exceções e retorna respostas de erro padronizadas.
+ * Handler global para exceções não tratadas.
+ * Deve ter a menor prioridade (maior valor de Order) para servir como fallback.
  */
+@Slf4j
 @RestControllerAdvice
+@Order(100)
 public class GlobalExceptionHandler {
 
-    /**
-     * Trata exceção de URL não encontrada.
-     * Retorna HTTP 404 (Not Found).
-     */
-    @ExceptionHandler(UrlNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleUrlNotFound(
-            UrlNotFoundException ex,
-            HttpServletRequest request) {
+        /**
+         * Trata exceções genéricas não capturadas pelos handlers específicos.
+         * Retorna HTTP 500 (Internal Server Error).
+         */
+        @ExceptionHandler(Exception.class)
+        @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+        public ResponseEntity<ErrorResponse> handleGenericException(
+                        Exception ex,
+                        HttpServletRequest request) {
 
-        ErrorResponse error = ErrorResponse.builder()
-                .status(HttpStatus.NOT_FOUND.value())
-                .message(ex.getMessage())
-                .path(request.getRequestURI())
-                .build();
+                log.error("Erro não tratado no endpoint {}: {}",
+                                request.getRequestURI(),
+                                ex.getMessage(),
+                                ex);
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
-    }
+                ErrorResponse error = ErrorResponse.builder()
+                                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                                .message("Erro interno do servidor")
+                                .path(request.getRequestURI())
+                                .build();
 
-    /**
-     * Trata exceção de código já existente.
-     * Retorna HTTP 409 (Conflict).
-     */
-    @ExceptionHandler(CodeAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponse> handleCodeAlreadyExists(
-            CodeAlreadyExistsException ex,
-            HttpServletRequest request) {
-
-        ErrorResponse error = ErrorResponse.builder()
-                .status(HttpStatus.CONFLICT.value())
-                .message(ex.getMessage())
-                .path(request.getRequestURI())
-                .build();
-
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
-    }
-
-    /**
-     * Trata erros de validação do Bean Validation.
-     * Retorna HTTP 400 (Bad Request) com lista de erros.
-     */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationErrors(
-            MethodArgumentNotValidException ex,
-            HttpServletRequest request) {
-
-        List<String> errors = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                .toList();
-
-        ErrorResponse error = ErrorResponse.builder()
-                .status(HttpStatus.BAD_REQUEST.value())
-                .message("Erro de validação")
-                .path(request.getRequestURI())
-                .errors(errors)
-                .build();
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
-    }
-
-    /**
-     * Trata exceções genéricas não tratadas.
-     * Retorna HTTP 500 (Internal Server Error).
-     */
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGenericException(
-            Exception ex,
-            HttpServletRequest request) {
-
-        ErrorResponse error = ErrorResponse.builder()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .message("Erro interno do servidor")
-                .path(request.getRequestURI())
-                .build();
-
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
-    }
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
 }

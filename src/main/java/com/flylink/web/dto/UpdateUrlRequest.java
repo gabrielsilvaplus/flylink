@@ -1,7 +1,7 @@
 package com.flylink.web.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -10,22 +10,27 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.URL;
 
+import java.time.OffsetDateTime;
+
 /**
- * DTO para requisição de criação de URL encurtada.
+ * DTO para atualização de URL encurtada.
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Dados para criar uma nova URL encurtada")
-public class CreateUrlRequest {
+@Schema(description = "Dados para atualizar uma URL")
+public class UpdateUrlRequest {
 
-    @Schema(description = "URL original que será encurtada", example = "https://github.com/usuario/projeto", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotBlank(message = "A URL original é obrigatória")
+    @Schema(description = "Nova URL original", example = "https://github.com/novo-repo")
     @URL(message = "Formato de URL inválido")
     private String originalUrl;
 
-    @Schema(description = "Código personalizado (opcional). Se não informado, será gerado automaticamente. Máximo 50 caracteres.", example = "meu-projeto", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @Schema(description = "Nova data de expiração")
+    @Future(message = "Data de expiração deve ser no futuro")
+    private OffsetDateTime expiresAt;
+
+    @Schema(description = "Novo código personalizado (opcional). Máximo 50 caracteres.", example = "novo-link-legal")
     @Size(max = 50, message = "O código deve ter no máximo 50 caracteres")
     @Pattern(regexp = "^[a-zA-Z0-9-_]*$", message = "O código deve conter apenas letras, números, hífen e underscore")
     private String customCode;
