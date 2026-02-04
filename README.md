@@ -93,6 +93,7 @@ A API é 100% documentada seguindo a especificação **OpenAPI 3.1**. Você pode
 O projeto foi desenhado para ser "Plug & Play" graças ao Docker.
 
 ### Pré-requisitos
+- Java 21 (JDK) Instalado
 - Docker & Docker Compose Instalados
 
 ### Passo a Passo
@@ -103,10 +104,11 @@ O projeto foi desenhado para ser "Plug & Play" graças ao Docker.
    ```
    *Isso baixará a imagem do Postgres 16 Alpine e iniciará o container.*
 
-2. **Rodar a Aplicação**:
+3. **Rodar a Aplicação**:
    ```bash
    ./mvnw spring-boot:run
    ```
+   *O Maven baixará automaticamente o Spring Boot e todas as dependências necessárias.*
 
 3. **Testar via Swagger**:
    Acesse a documentação interativa para testar os endpoints sem precisar instalar nada.
