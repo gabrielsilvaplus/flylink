@@ -38,7 +38,7 @@ Utilizo um alfabeto de 62 caracteres:
 
 ### Por que 7 caracteres?
 Com um comprimento fixo de 7 caracteres, o espaço de combinações possíveis é:
-$$ 62^7 = 3.521.614.606.208 $$
+`62^7 = 3.521.614.606.208`
 Isso gera mais de **3.5 trilhões** de combinações únicas. 
 
 Para este MVP, utilizei uma estratégia de geração aleatória (`SecureRandom`) com verificação de colisão (`do-while`). Embora exista uma chance infinitesimal de colisão, ela é tratada verificando a existência no banco antes de salvar. Em um cenário de escala massiva (Twitter/Google), eu evoluiria para uma estratégia de **ID Pré-gerado (KGS - Key Generation Service)** ou conversão de base numérica a partir de um ID sequencial.
