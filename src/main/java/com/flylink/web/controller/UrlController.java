@@ -81,7 +81,7 @@ public class UrlController {
         @GetMapping("/{code}")
         public ResponseEntity<UrlResponse> getByCode(
                         @Parameter(description = "Código da URL encurtada", example = "abc1234") @PathVariable String code) {
-                ShortUrlEntity entity = urlService.findByCode(code);
+                ShortUrlEntity entity = urlService.findExistingByCode(code);
                 return ResponseEntity.ok(toResponse(entity));
         }
 
@@ -112,7 +112,7 @@ public class UrlController {
         @GetMapping("/{code}/stats")
         public ResponseEntity<UrlStatsResponse> getStats(
                         @Parameter(description = "Código da URL") @PathVariable String code) {
-                ShortUrlEntity entity = urlService.findByCode(code);
+                ShortUrlEntity entity = urlService.findExistingByCode(code);
                 return ResponseEntity.ok(toStatsResponse(entity));
         }
 

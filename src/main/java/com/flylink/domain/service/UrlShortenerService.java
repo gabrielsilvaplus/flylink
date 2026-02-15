@@ -56,15 +56,29 @@ public class UrlShortenerService {
 
     /**
      * Busca uma URL pelo código.
-     * Retorna apenas URLs ativas.
+     * Retorna apenas URLs ativas (usado para redirecionamento).
+     * 
+     * @param code Código da URL encurtada
+     * @return Entidade encontrada
+     * @throws UrlNotFoundException se não encontrar ou estiver inativa
+     */
+    @Transactional(readOnly = true)
+    public ShortUrlEntity findByCode(String code) {
+        return repository.findByCodeAndIsActiveTrue(code)
+                .orElseThrow(() -> new UrlNotFoundException(code));
+    }
+
+    /**
+     * Busca uma URL pelo código, incluindo URLs inativas.
+     * Usado para operações de gerenciamento (editar, deletar, visualizar detalhes).
      * 
      * @param code Código da URL encurtada
      * @return Entidade encontrada
      * @throws UrlNotFoundException se não encontrar
      */
     @Transactional(readOnly = true)
-    public ShortUrlEntity findByCode(String code) {
-        return repository.findByCodeAndIsActiveTrue(code)
+    public ShortUrlEntity findExistingByCode(String code) {
+        return repository.findByCode(code)
                 .orElseThrow(() -> new UrlNotFoundException(code));
     }
 
@@ -99,7 +113,7 @@ public class UrlShortenerService {
      */
     @Transactional
     public void deleteByCode(String code) {
-        ShortUrlEntity entity = findByCode(code);
+        ShortUrlEntity entity = findExistingByCode(code);
         repository.delete(entity);
     }
 
@@ -113,7 +127,7 @@ public class UrlShortenerService {
      */
     @Transactional
     public ShortUrlEntity updateUrl(String code, String originalUrl, OffsetDateTime expiresAt, String customCode) {
-        ShortUrlEntity entity = findByCode(code);
+        ShortUrlEntity entity = findExistingByCode(code);
 
         if (customCode != null && !customCode.isBlank() && !customCode.equals(entity.getCode())) {
             if (repository.existsByCode(customCode)) {
