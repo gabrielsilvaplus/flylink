@@ -12,9 +12,10 @@ Adotei uma arquitetura em camadas bem definidas, garantindo separação de respo
 
 ```text
 src/main/java/com/flylink
-├── domain          # O "Coração" do sistema (Regras de Negócio)
-├── infrastructure  # Detalhes de implementação (Banco de Dados, Configs)
-└── web             # Camada de Entrada (Controllers, DTOs, Handlers)
+├── config          # Configurações Globais (Security, CORS, JWT, OpenAPI)
+├── domain          # O "Coração" do sistema (Regras de Negócio e Serviços)
+├── infrastructure  # Detalhes de implementação (JPA, Repositórios, Provider JWT)
+└── web             # Camada de Entrada (Controllers, DTOs, ExceptionHandlers)
 ```
 
 ### Destaques do Código
