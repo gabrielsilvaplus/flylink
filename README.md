@@ -1,8 +1,23 @@
 # FlyLink API
 
+![Java 21](https://img.shields.io/badge/Java-21-blue?style=for-the-badge&logo=openjdk)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.4.2-brightgreen?style=for-the-badge&logo=springboot)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?style=for-the-badge&logo=postgresql)
+![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker)
+
 > **Encurtador de URLs focado em simplicidade, robustez e Clean Code.**
 
 Desenvolvi este projeto utilizando **Java 21** e **Spring Boot 4**, com o objetivo de criar uma API RESTful para gerenciamento de links curtos, aplicando boas práticas de engenharia de software (SOLID, DRY) para entregar um código limpo e sustentável.
+
+---
+
+## 🎯 Principais Funcionalidades
+
+- **Autenticação Segura:** Registro e Login via tokens JWT.
+- **Encurtador Inteligente:** Gere links alfanuméricos curtos (Base62) ou defina aliases personalizados (`meu-site`).
+- **Links Autodestrutíveis (Mensagens Efêmeras):** Configure links para expirarem após uma data específica ou após atingirem um limite máximo de cliques.
+- **Estatísticas de Acesso:** Contagem atômica de acessos em tempo real.
+- **Dashboard API:** Listagem ágil das URLs criadas pelo usuário logado e opção para ativar/desativar links independentemente da expiração.
 
 ---
 
@@ -127,7 +142,13 @@ O projeto foi desenhado para ser "Plug & Play" graças ao Docker.
 
 ### Passo a Passo
 
-1. **Subir a Infraestrutura**:
+1. **Configurar as Variáveis de Ambiente**:
+   Faça uma cópia do arquivo de exemplo para gerar o seu `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Subir a Infraestrutura (Banco de Dados)**:
    ```bash
    docker-compose up -d
    ```
@@ -139,7 +160,7 @@ O projeto foi desenhado para ser "Plug & Play" graças ao Docker.
    ```
    *O Maven baixará automaticamente o Spring Boot e todas as dependências necessárias.*
 
-3. **Testar via Swagger**:
+4. **Testar via Swagger**:
    Acesse a documentação interativa para testar os endpoints sem precisar instalar nada.
 
 ---
