@@ -149,7 +149,7 @@ Com as bases do backend consolidadas, o projeto agora pivotará para o ecossiste
 
 - [x] **Segurança**: Implementar autenticação JWT com Spring Security e BCrypt.
 - [x] **Testes Automatizados**: Criar cobertura extensa de testes Unitários (Mockito) e de Integração realística (Testcontainers).
-- [ ] **Desenvolvimento Frontend (Foco Atual)**: Criação de uma interface web interativa (React/Next.js ou Astro) para consumir a API, permitindo gestão visual dos links e autenticação de usuários.
+- [ ] **Desenvolvimento Frontend (Foco Atual)**: Criação de uma SPA de alta performance utilizando **React + Vite** e gerenciador de pacotes **Bun**. Consumo da API tipado de ponta a ponta com **Orval JS** + **TanStack Query**, roteamento com **TanStack Router**, estilização via **Tailwind CSS** e validações estruturais com **Zod**.
 - [ ] **Integração na AWS (Futuro)**: Subir a infraestrutura preparada no Docker para os serviços gerenciados da nuvem.
 - [ ] **Cache de Leitura (Redis)**: Para otimizar a latência no redirecionamento de URLs virais (muito acessadas).
 
