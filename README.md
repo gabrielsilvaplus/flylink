@@ -17,7 +17,7 @@ Desenvolvi este projeto utilizando **Java 21** e **Spring Boot 4**, com o objeti
 - **Encurtador Inteligente:** Gere links alfanuméricos curtos (Base62) ou defina aliases personalizados (`meu-site`).
 - **Links Autodestrutíveis (Mensagens Efêmeras):** Configure links para expirarem após uma data específica ou após atingirem um limite máximo de cliques.
 - **Estatísticas de Acesso:** Contagem atômica de acessos em tempo real.
-- **Dashboard API:** Listagem ágil das URLs criadas pelo usuário logado e opção para ativar/desativar links independentemente da expiração.
+- **Gerenciamento Autenticado:** Listagem ágil das URLs criadas pelo usuário logado e opção para ativar/desativar links independentemente da expiração.
 
 ---
 
@@ -132,36 +132,42 @@ A API é 100% documentada seguindo a especificação **OpenAPI 3.1**. Você pode
 
 ---
 
-## 🚀 Como Executar
+## 🚀 Guia de Execução
 
-O projeto foi desenhado para ser "Plug & Play" graças ao Docker.
+O projeto foi estruturado para rodar localmente de forma agnóstica de sistema operacional (Mac/Linux/Windows). Toda a infraestrutura espelha o ambiente e os dados de produção.
 
 ### Pré-requisitos
-- Java 21 (JDK) Instalado
-- Docker & Docker Compose Instalados
+- **Java 21 (JDK)**
+- **Docker e Docker Compose**
 
-### Passo a Passo
+### 1. Iniciar Aplicação Local
+Para rodar a aplicação para testes manuais e desenvolvimento:
 
-1. **Configurar as Variáveis de Ambiente**:
-   Faça uma cópia do arquivo de exemplo para gerar o seu `.env`:
+1. **Gere o arquivo de variáveis de ambiente obrigatório:**
    ```bash
    cp .env.example .env
    ```
 
-2. **Subir a Infraestrutura (Banco de Dados)**:
+2. **Suba o Banco de Dados (PostgreSQL 16):**
    ```bash
    docker-compose up -d
    ```
-   *Isso baixará a imagem do Postgres 16 Alpine e iniciará o container.*
 
-3. **Rodar a Aplicação**:
+3. **Inicie a API Spring Boot:**
    ```bash
    ./mvnw spring-boot:run
    ```
-   *O Maven baixará automaticamente o Spring Boot e todas as dependências necessárias.*
 
-4. **Testar via Swagger**:
-   Acesse a documentação interativa para testar os endpoints sem precisar instalar nada.
+4. **Acesse via Swagger:**
+   Com a aplicação de pé, a forma oficial de interagir com a API é através do Scalar UI interativo em:  
+   `http://localhost:8080/swagger-ui.html`
+
+### 2. Rodar a Suíte de Testes
+Para garantir a integridade do sistema ou validar PRs, basta rodar o comando abaixo. Como desenhado, **os testes de integração levantarão contêineres temporários** do PostgreSQL e apagarão eles automaticamente ao fim da suíte.
+
+```bash
+./mvnw clean test
+```
 
 ---
 
