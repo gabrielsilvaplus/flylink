@@ -25,6 +25,15 @@ src/main/java/com/flylink
 
 ---
 
+## 🛡️ Segurança e Autenticação (JWT)
+
+Para proteger a criação e gerenciamento dos links, implementei um sistema de autenticação robusto e *Stateless*:
+- **Filtro Customizado (`OncePerRequestFilter`)**: Intercepta as requisições, valida a assinatura do token JWT emitido e injeta o usuário no contexto do Spring Security de forma performática.
+- **BCrypt Hashing**: Senhas de usuários nunca são salvas em texto plano; o banco armazena apenas o hash BCrypt para proteção contra vazamentos.
+- **Camada de Exceções de Segurança**: Respostas claras de `HTTP 401 Unauthorized` e `HTTP 403 Forbidden` gerenciadas nativamente pelos *EntryPoints* e *Handlers* do Security.
+
+---
+
 ## 🧩 O Algoritmo de Encurtamento
 
 Para gerar os códigos curtos (ex: `AbC123z`), implementei um algoritmo baseado em **Base62**.
@@ -57,6 +66,14 @@ Quando um usuário tenta acessar um link que se autodestruiu, a API retorna impe
 
 ---
 
+## 🧪 Qualidade de Software e Testes
+
+Como um projeto projetado para o mercado, a qualidade e resiliência foram prioridade. A API conta com uma **suíte de testes de amplo espectro** (Unitários e de Integração), todos padronizados e documentados em Português-BR.
+
+- **Padrão AAA (Arrange, Act, Assert)**: Todos os testes seguem uma estrutura lógica estrita para máxima legibilidade. Nossos arquivos de teste **não possuem "God Methods"**; garantimos extrema granularidade (um teste por comportamento).
+- **Testes Unitários de Alta Performance**: Os componentes de domínio e web (`Services` e `Controllers`) são testados injetando dependências isoladas via **Mockito**, permitindo execução local de centenas de testes em centésimos de segundo.
+- **Testes de Integração com Testcontainers**: A camada de persistência e fluxos End-to-End (E2E) não utilizam banco de dados em memória falso (como H2). Eles levantam um container com uma imagem oficial do **PostgreSQL 16** via `Testcontainers`, realizando testes contra o motor real do banco para prevenir surpresas em produção.
+
 ## 🛠 Stack Tecnológica & Infraestrutura
 
 A escolha da stack foi baseada em estabilidade (LTS) e performance.
@@ -66,11 +83,10 @@ Utilizei a versão mais recente e estável (**PostgreSQL 16**) rodando sobre **A
 - **Indexação**: Focada em otimização de leitura. O campo `code` (o link curto) possui um índice `UNIQUE` (B-Tree) para garantir buscas em tempo constante O(1) ou logarítmico, essencial para o redirecionamento rápido.
 - **Persistência**: Dados persistidos em volume Docker (`postgres_data`) para segurança entre restarts.
 
-### 🐳 Docker & Containerização
-Todo o ambiente de desenvolvimento é orquestrado via **Docker Compose**:
-- **Consistência**: Garante que o banco sobe exatamente com a mesma configuração em qualquer máquina (`postgres:16-alpine`).
-- **Healthchecks**: Configurei healthchecks nativos (`pg_isready`) para garantir que a aplicação só tente conectar quando o banco estiver realmente pronto.
-- **Isolamento**: O banco roda isolado na rede interna do Docker, expondo apenas a porta padrão 5432.
+### 🐳 Docker & Containerização (Fundação para Cloud)
+Preparei apenas a base essencial para uma futura migração para a Nuvem (AWS).
+- **Orquestração Local**: O ambiente de desenvolvimento isolado levanta o PostgreSQL via `docker-compose.yml` utilizando healthchecks e redes internas.
+- **Dockerfile Multi-Stage**: Para quando for a hora de subir para produção (EC2, App Runner, etc), incluí um `Dockerfile` otimizado e um `.dockerignore` que geram uma imagem minúscula baseada em **JRE Alpine** sob um usuário não-root.
 
 ### Outras Tecnologias
 - **Java 21 (LTS)**: Aproveitando performance da JVM moderna.
@@ -129,12 +145,13 @@ O projeto foi desenhado para ser "Plug & Play" graças ao Docker.
 
 ## 🔮 Próximos Passos (Roadmap)
 
-Planejo evoluir este projeto para lidar com alta escala e adicionar novas funcionalidades:
+Com as bases do backend consolidadas, o projeto agora pivotará para o ecossistema Frontend.
 
-- [ ] **Testes Automatizados**: Criar testes unitários e de integração (ainda não implementados).
-- [ ] **Cache com Redis**: Para otimizar a leitura e redirecionamento de URLs muito acessadas.
-- [ ] **Microsserviço de Notificação**: Criar uma API separada (com RabbitMQ/Kafka) para enviar e-mails quando um link atingir metas de cliques (ex: 1000 acessos).
-- [ ] **Segurança**: Implementar autenticação JWT com Spring Security.
+- [x] **Segurança**: Implementar autenticação JWT com Spring Security e BCrypt.
+- [x] **Testes Automatizados**: Criar cobertura extensa de testes Unitários (Mockito) e de Integração realística (Testcontainers).
+- [ ] **Desenvolvimento Frontend (Foco Atual)**: Criação de uma interface web interativa (React/Next.js ou Astro) para consumir a API, permitindo gestão visual dos links e autenticação de usuários.
+- [ ] **Integração na AWS (Futuro)**: Subir a infraestrutura preparada no Docker para os serviços gerenciados da nuvem.
+- [ ] **Cache de Leitura (Redis)**: Para otimizar a latência no redirecionamento de URLs virais (muito acessadas).
 
 ---
 
