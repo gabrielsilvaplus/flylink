@@ -2,7 +2,13 @@ package com.flylink.web.controller;
 
 import com.flylink.domain.service.UrlShortenerService;
 import com.flylink.infrastructure.persistence.entity.ShortUrlEntity;
+import com.flylink.web.dto.ErrorResponse;
 import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -38,6 +44,12 @@ public class RedirectController {
      * @param code Código da URL encurtada
      * @return Redirecionamento HTTP 302
      */
+    @Operation(summary = "Redirecionamento Original", description = "Faz o redirecionamento (HTTP 302) para o destino com base no código.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "302", description = "Redirecionamento executado"),
+            @ApiResponse(responseCode = "404", description = "Código não encontrado", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "410", description = "Código expirado (limite de tempo ou cliques atingido)", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
     @GetMapping("/{code:[a-zA-Z0-9_-]+}")
     public ResponseEntity<Void> redirect(@PathVariable String code) {
         // Busca a URL pelo código

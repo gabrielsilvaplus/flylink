@@ -18,30 +18,33 @@ import java.time.OffsetDateTime;
 @Schema(description = "Dados de uma URL encurtada")
 public class UrlResponse {
 
-    @Schema(description = "ID único no banco de dados", example = "1")
+    @Schema(description = "ID único no banco de dados", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long id;
 
-    @Schema(description = "Código curto da URL", example = "abc1234")
+    @Schema(description = "Código curto da URL", example = "abc1234", requiredMode = Schema.RequiredMode.REQUIRED)
     private String code;
 
-    @Schema(description = "URL encurtada completa", example = "http://localhost:8080/abc1234")
+    @Schema(description = "URL encurtada completa", example = "http://localhost:8080/abc1234", requiredMode = Schema.RequiredMode.REQUIRED)
     private String shortUrl;
 
-    @Schema(description = "URL original", example = "https://github.com/usuario/projeto")
+    @Schema(description = "URL original", example = "https://github.com/usuario/projeto", requiredMode = Schema.RequiredMode.REQUIRED)
     private String originalUrl;
 
-    @Schema(description = "Número de cliques", example = "42")
+    @Schema(description = "Número de cliques", example = "42", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long clickCount;
 
-    @Schema(description = "Data de criação")
+    @Schema(description = "Data de criação", requiredMode = Schema.RequiredMode.REQUIRED)
     private OffsetDateTime createdAt;
 
-    @Schema(description = "Data de expiração (pode ser null)")
+    @Schema(description = "Data de expiração (pode ser null)", nullable = true)
     private OffsetDateTime expiresAt;
 
-    @Schema(description = "Data do último clique/acesso")
+    @Schema(description = "Data do último clique/acesso", nullable = true)
     private OffsetDateTime lastClickAt;
 
-    @Schema(description = "Indica se a URL está ativa", example = "true")
+    @Schema(description = "Indica se a URL está ativa", example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean isActive;
+
+    @Schema(description = "Número máximo de cliques permitido (pode ser null)", example = "100", nullable = true)
+    private Long maxClicks;
 }

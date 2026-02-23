@@ -1,11 +1,9 @@
 package com.flylink.web.exception;
 
 import com.flylink.domain.exception.CodeAlreadyExistsException;
+import com.flylink.domain.exception.UrlExpiredException;
 import com.flylink.domain.exception.UrlNotFoundException;
 import com.flylink.web.dto.ErrorResponse;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -27,7 +25,6 @@ public class DomainExceptionHandler {
      * Retorna HTTP 404 (Not Found).
      */
     @ExceptionHandler(UrlNotFoundException.class)
-    @ApiResponse(responseCode = "404", description = "URL não encontrada", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     public ResponseEntity<ErrorResponse> handleUrlNotFound(
             UrlNotFoundException ex,
             HttpServletRequest request) {
@@ -46,7 +43,6 @@ public class DomainExceptionHandler {
      * Retorna HTTP 409 (Conflict).
      */
     @ExceptionHandler(CodeAlreadyExistsException.class)
-    @ApiResponse(responseCode = "409", description = "Código já existe", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     public ResponseEntity<ErrorResponse> handleCodeAlreadyExists(
             CodeAlreadyExistsException ex,
             HttpServletRequest request) {
@@ -58,5 +54,23 @@ public class DomainExceptionHandler {
                 .build();
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    /**
+     * Trata exceção de URL expirada (por tempo ou cliques).
+     * Retorna HTTP 410 (Gone).
+     */
+    @ExceptionHandler(UrlExpiredException.class)
+    public ResponseEntity<ErrorResponse> handleUrlExpired(
+            UrlExpiredException ex,
+            HttpServletRequest request) {
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.GONE.value())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.GONE).body(error);
     }
 }

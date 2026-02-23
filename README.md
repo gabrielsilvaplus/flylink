@@ -45,6 +45,18 @@ Para este MVP, utilizei uma estratégia de geração aleatória (`SecureRandom`)
 
 ---
 
+## ⏳ Links Dinâmicos (Self-Destruct)
+
+A API FlyLink suporta links efêmeros, perfeitos para campanhas de marketing com escassez ou compartilhamento seguro de informações temporárias.
+
+### Como funciona:
+- **Por Tempo (`expiresAt`)**: Você pode definir uma data e hora no futuro. Passado esse momento, o link expirará automaticamente. Trata problemas complexos de *Timezone* armazenando em `OffsetDateTime` (UTC).
+- **Por Cliques (`maxClicks`)**: Você pode limitar um link aos "10 primeiros acessos", por exemplo. O banco de dados garante atomicamente (`UPDATE SET ... CASE WHEN`) que exatamente 10 pessoas terão acesso antes do link se autodestruir, evitando *Race Conditions*.
+
+Quando um usuário tenta acessar um link que se autodestruiu, a API retorna impecavelmente o código semântico **HTTP 410 Gone**, informando aos clientes (finais e frontends baseados em React Query/Orval) que o recurso existia, mas expirou intencionalmente.
+
+---
+
 ## 🛠 Stack Tecnológica & Infraestrutura
 
 A escolha da stack foi baseada em estabilidade (LTS) e performance.

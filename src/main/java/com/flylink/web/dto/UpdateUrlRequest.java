@@ -3,6 +3,7 @@ package com.flylink.web.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,9 +27,13 @@ public class UpdateUrlRequest {
     @URL(message = "Formato de URL inválido")
     private String originalUrl;
 
-    @Schema(description = "Nova data de expiração")
+    @Schema(description = "Nova data de expiração", nullable = true)
     @Future(message = "Data de expiração deve ser no futuro")
     private OffsetDateTime expiresAt;
+
+    @Schema(description = "Novo número máximo de cliques da URL. Permite edição para renovar limites.", example = "10", nullable = true)
+    @Positive(message = "O limite de cliques deve ser positivo")
+    private Long maxClicks;
 
     @Schema(description = "Novo código personalizado (opcional). Máximo 50 caracteres.", example = "novo-link-legal")
     @Size(max = 50, message = "O código deve ter no máximo 50 caracteres")

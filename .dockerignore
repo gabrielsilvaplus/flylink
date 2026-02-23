@@ -1,0 +1,18 @@
+.git/
+.gitignore
+.idea/
+.vscode/
+
+# Build e Dependências
+target/
+*.jar
+*.war
+*.log
+
+# Variáveis Locais (NUNCA ENVIAR PARA A IMAGEM DOCKER)
+.env
+.env.local
+
+# Banco local e IDE
+data/
+docker-compose.yml

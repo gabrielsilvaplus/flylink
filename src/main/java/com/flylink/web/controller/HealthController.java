@@ -1,6 +1,10 @@
 package com.flylink.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +19,10 @@ import java.util.Map;
 @Tag(name = "Health", description = "Status da aplicação")
 public class HealthController {
 
-    @Operation(summary = "Verifica status da aplicação")
+    @Operation(summary = "Verifica status da aplicação", description = "Retorna o status atual do serviço. Não exige autenticação.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Serviço operacional", content = @Content(mediaType = "application/json", schema = @Schema(example = "{\"status\": \"UP\"}")))
+    })
     @GetMapping("/health")
     public ResponseEntity<Map<String, String>> health() {
         return ResponseEntity.ok(Map.of("status", "UP"));

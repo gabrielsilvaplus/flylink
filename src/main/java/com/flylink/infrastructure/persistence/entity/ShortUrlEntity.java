@@ -58,6 +58,10 @@ public class ShortUrlEntity {
     @Builder.Default
     private Boolean isActive = true;
 
+    // Novo campo para "self-destruct" por cliques
+    @Column(name = "max_clicks")
+    private Long maxClicks;
+
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = OffsetDateTime.now();

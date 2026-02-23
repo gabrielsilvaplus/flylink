@@ -1,9 +1,6 @@
 package com.flylink.web.exception;
 
 import com.flylink.web.dto.ErrorResponse;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -19,7 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  */
 @Slf4j
 @RestControllerAdvice
-@Order(3)
+@Order(4)
 public class DatabaseExceptionHandler {
 
     /**
@@ -27,7 +24,6 @@ public class DatabaseExceptionHandler {
      * Retorna HTTP 400 (Bad Request) com mensagem amigável.
      */
     @ExceptionHandler(DataIntegrityViolationException.class)
-    @ApiResponse(responseCode = "400", description = "Erro de integridade de dados", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(
             DataIntegrityViolationException ex,
             HttpServletRequest request) {

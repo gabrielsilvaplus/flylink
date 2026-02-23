@@ -1,9 +1,6 @@
 package com.flylink.web.exception;
 
 import com.flylink.web.dto.ErrorResponse;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -19,7 +16,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
  */
 @Slf4j
 @RestControllerAdvice
-@Order(4)
+@Order(5)
 public class ResourceNotFoundExceptionHandler {
 
     /**
@@ -27,7 +24,6 @@ public class ResourceNotFoundExceptionHandler {
      * Retorna HTTP 404 (Not Found) sem logar como erro (apenas debug).
      */
     @ExceptionHandler(NoResourceFoundException.class)
-    @ApiResponse(responseCode = "404", description = "Recurso não encontrado", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     public ResponseEntity<ErrorResponse> handleNoResourceFound(
             NoResourceFoundException ex,
             HttpServletRequest request) {

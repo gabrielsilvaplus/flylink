@@ -24,6 +24,11 @@ public interface ShortUrlJpaRepository extends JpaRepository<ShortUrlEntity, Lon
     List<ShortUrlEntity> findByUserId(Long userId);
 
     @Modifying
-    @Query("UPDATE ShortUrlEntity u SET u.clickCount = u.clickCount + 1, u.updatedAt = CURRENT_TIMESTAMP WHERE u.code = :code")
-    void incrementClickCount(String code);
+    @Query("UPDATE ShortUrlEntity u SET " +
+            "u.clickCount = u.clickCount + 1, " +
+            "u.lastClickAt = CURRENT_TIMESTAMP, " +
+            "u.isActive = CASE WHEN (u.maxClicks IS NOT NULL AND u.clickCount + 1 >= u.maxClicks) THEN false ELSE u.isActive END "
+            +
+            "WHERE u.code = :code AND u.isActive = true")
+    int incrementClickCountSafely(String code);
 }

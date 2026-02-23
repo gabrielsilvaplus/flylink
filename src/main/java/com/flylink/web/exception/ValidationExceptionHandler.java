@@ -1,9 +1,6 @@
 package com.flylink.web.exception;
 
 import com.flylink.web.dto.ErrorResponse;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -19,32 +16,31 @@ import java.util.List;
  * Retorna lista detalhada de erros de campo.
  */
 @RestControllerAdvice
-@Order(2)
+@Order(3)
 public class ValidationExceptionHandler {
 
-    /**
-     * Trata erros de validação do Bean Validation.
-     * Retorna HTTP 400 (Bad Request) com lista de erros.
-     */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ApiResponse(responseCode = "400", description = "Erro de validação", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public ResponseEntity<ErrorResponse> handleValidationErrors(
-            MethodArgumentNotValidException ex,
-            HttpServletRequest request) {
+        /**
+         * Trata erros de validação do Bean Validation.
+         * Retorna HTTP 400 (Bad Request) com lista de erros.
+         */
+        @ExceptionHandler(MethodArgumentNotValidException.class)
+        public ResponseEntity<ErrorResponse> handleValidationErrors(
+                        MethodArgumentNotValidException ex,
+                        HttpServletRequest request) {
 
-        List<String> errors = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                .toList();
+                List<String> errors = ex.getBindingResult()
+                                .getFieldErrors()
+                                .stream()
+                                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                                .toList();
 
-        ErrorResponse error = ErrorResponse.builder()
-                .status(HttpStatus.BAD_REQUEST.value())
-                .message("Erro de validação")
-                .path(request.getRequestURI())
-                .errors(errors)
-                .build();
+                ErrorResponse error = ErrorResponse.builder()
+                                .status(HttpStatus.BAD_REQUEST.value())
+                                .message("Erro de validação")
+                                .path(request.getRequestURI())
+                                .errors(errors)
+                                .build();
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
-    }
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
 }
